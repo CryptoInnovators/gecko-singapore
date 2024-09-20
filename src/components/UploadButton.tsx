@@ -19,8 +19,44 @@ const UploadButton = () => {
   const [projectName, setProjectName] = useState('');
   const [file, setFile] = useState<File | null>(null);
 
-  const uploadImage = async (file: File) => {
-    // ... (keep your existing upload logic)
+  const uploadFile = async (file: File) => {
+    if (!user) return;
+
+    const userId = user.id;
+    const uuid = uuidv4();
+    const { data, error } = await supabase
+      .storage
+      .from('uploads')
+      .upload(`${userId}/${uuid}`, file);
+
+    if (data) {
+      console.log('File uploaded successfully:', data);
+
+      const { data: scanData, error: scanError } = await supabase
+        .from('scans')
+        .insert([
+          {
+            id: uuid,
+            name: projectName,
+            user_id: userId,
+            uploaded_at: new Date(),
+            result: {},
+          },
+        ]);
+
+      if (scanError) {
+        console.error('Error inserting scan record:', scanError);
+      } else {
+        console.log('Scan record inserted successfully:', scanData);
+      }
+
+      setIsOpen(false);
+      setShowContractUpload(false);
+      setProjectName('');
+      setFile(null);
+    } else {
+      console.error('Error uploading file:', error);
+    }
   };
 
   const uploadOptions = [
@@ -29,8 +65,12 @@ const UploadButton = () => {
     { icon: <Upload className="h-5 w-5 mr-2" />, label: "Upload Contract", action: () => setShowContractUpload(true) },
   ];
 
-  const handleStartScan = () => {
-    console.log("Starting scan for project:", projectName, "with file:", file);
+  const handleStartScan = async () => {
+    if (file && projectName) {
+      await uploadFile(file);
+    } else {
+      console.error("Project name and file are required to start a scan");
+    }
   };
 
   return (
@@ -43,7 +83,7 @@ const UploadButton = () => {
       }
     }}>
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-        <Button className="bg-green-500 hover:bg-green-600 text-white">
+        <Button className="bg-green-700 hover:bg-green-600 transition-all duration-200 text-white">
           <PlusCircle className="mr-2 h-4 w-4" /> Add Project
         </Button>
       </DialogTrigger>
@@ -110,7 +150,7 @@ const UploadButton = () => {
                   <h4 className="text-sm font-medium text-gray-300 mb-2">NOTE: Please verify the following to avoid scan failure:</h4>
                   <ul className="text-xs text-gray-400 list-disc list-inside space-y-1">
                     <li>You can only upload a single file using this method.</li>
-                    <li>File size should not exceed 5 MB and must have a (.sol) extension.</li>
+                    <li>File size should not exceed 10 MB and must have a (.cairo) extension.</li>
                   </ul>
                 </div>
                 <div className="flex-shrink-0 ml-4 relative">

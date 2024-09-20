@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Ghost, Plus, Trash2, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Button } from './ui/button';
 import { getScan, deleteScan } from '@/utils/scanUtils';
 import UploadButton from './UploadButton';
 
@@ -57,8 +56,8 @@ export default function Scans() {
               .sort((a, b) => new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime())
               .map(scan => (
                 <Link href={`/home/${scan.id}`} key={scan.id}>
-                  <div className="bg-[#171717] rounded-lg p-4 hover:bg-[#1a1a1a] transition-all duration-200 tweet-border">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="bg-[#171717] rounded-lg p-4 hover:bg-[#1a1a1a] transition-all duration-200 tweet-border h-[172px] flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <EthLogo />
                         <div>
@@ -76,7 +75,7 @@ export default function Scans() {
                         </button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-3 gap-4 text-sm mt-auto">
                       <div>
                         <p className="text-gray-400">Issues found</p>
                         <p className="font-semibold">{scan.issues_found ?? 'N/A'}</p>
