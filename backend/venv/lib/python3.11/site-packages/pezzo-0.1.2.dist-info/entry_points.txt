@@ -1,0 +1,3 @@
+[console_scripts]
+prebuild=pezzo.scripts.prebuild:main
+
