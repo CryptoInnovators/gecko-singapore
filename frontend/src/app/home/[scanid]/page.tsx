@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import { AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Spinner } from '@nextui-org/spinner';
+import { transform } from 'next/dist/build/swc';
 
 type Scan = {
   id: string;
@@ -175,11 +176,11 @@ const Page = ({ params }: PageProps) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-sm font-medium mb-2 text-white">Instruction Coverage</h3>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={coverageData}>
+                    <ResponsiveContainer width="100%" height={200} className='pr-4'>
+                      <LineChart data={coverageData} margin={{ left: -30 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="time" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
+                        <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }}/>
+                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
                         <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
                         <Line type="monotone" dataKey="coverage" stroke="#10B981" strokeWidth={2} />
                       </LineChart>
@@ -187,11 +188,11 @@ const Page = ({ params }: PageProps) => {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium mb-2 text-white">Branch Coverage</h3>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={coverageData}>
+                    <ResponsiveContainer width="100%" height={200} className='pr-4'>
+                    <LineChart data={coverageData} margin={{ left: -30 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="time" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
+                        <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
                         <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
                         <Line type="monotone" dataKey="coverage" stroke="#3B82F6" strokeWidth={2} />
                       </LineChart>

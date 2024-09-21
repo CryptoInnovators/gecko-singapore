@@ -146,7 +146,7 @@ export default function UploadButton() {
                   <Dropzone
                     onDrop={(acceptedFiles) => setFile(acceptedFiles[0])}
                     accept={{
-                      'application/octet-stream': ['.cairo']
+                      'application/octet-stream': ['.cairo', '.sol']
                     }}
                     maxFiles={1}
                   >
