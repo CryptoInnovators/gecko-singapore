@@ -1,4 +1,3 @@
-# Generated from .\SolidityLexer.g4 by ANTLR 4.12.0
 from antlr4 import *
 from io import StringIO
 import sys
@@ -6,7 +5,6 @@ if sys.version_info[1] > 5:
     from typing import TextIO
 else:
     from typing.io import TextIO
-
 
 def serializedATN():
     return [
@@ -1130,15 +1128,11 @@ def serializedATN():
     ]
 
 class SolidityLexer(Lexer):
-
     atn = ATNDeserializer().deserialize(serializedATN())
-
     decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
-
     AssemblyBlockMode = 1
     YulMode = 2
     PragmaMode = 3
-
     ReservedKeywords = 1
     Abstract = 2
     Address = 3
@@ -1313,11 +1307,8 @@ class SolidityLexer(Lexer):
     PragmaWS = 172
     PragmaCOMMENT = 173
     PragmaLINE_COMMENT = 174
-
     channelNames = [ u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN" ]
-
     modeNames = [ "DEFAULT_MODE", "AssemblyBlockMode", "YulMode", "PragmaMode" ]
-
     literalNames = [ "<INVALID>",
             "'abstract'", "'address'", "'anonymous'", "'as'", "'assembly'", 
             "'bool'", "'bytes'", "'calldata'", "'catch'", "'constant'", 

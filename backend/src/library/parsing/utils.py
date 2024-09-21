@@ -3,7 +3,6 @@ from copy import deepcopy
 import re
 import traceback
 
-
 # calculate hash
 def hashString(content):
     return hashlib.md5(content.encode('utf-8')).hexdigest()

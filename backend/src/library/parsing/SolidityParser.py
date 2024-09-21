@@ -4,12 +4,9 @@ from .utils import *
 from .constantTokenId import *
 import logging
 
-# logging.basicConfig(filename='parser.log', encoding='utf-8', level=logging.DEBUG,filemode='a')
-
 def getTokenStream(input_stream):
     try:
-        # input_stream = FileStream(file_path)  # change encoding of FileStream from ascii to utf-8
-        lexer = SolidityLexer(input_stream)  # remove ord()
+        lexer = SolidityLexer(input_stream) 
         return CommonTokenStream(lexer)
     except Exception:
         return CommonTokenStream()

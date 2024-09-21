@@ -33,13 +33,10 @@ class ProjectTaskMgr(object):
     def _add_task(self, session, task, commit=True):
         try:
             key = task.get_key()
-            # ts = session.query(Project_Task).filter_by(project_id=self.project_id, key=key).all()
-            # if len(ts) == 0:
             session.add(task)
             if commit:
                 res=session.commit()
         except sqlalchemy.exc.IntegrityError as e:
-            # 如果违反唯一性约束，则回滚事务
             session.rollback()
 
     def get_task_list(self):
@@ -106,7 +103,7 @@ class ProjectTaskMgr(object):
     def get_writer(self, filename):
         file = open(filename, 'w', newline='', encoding='utf-8')
         writer = csv.DictWriter(file, fieldnames=Project_Task.fieldNames)
-        writer.writeheader()  # write header
+        writer.writeheader() 
         return writer
 
     def merge_results(self, function_rules):

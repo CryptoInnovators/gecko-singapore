@@ -118,9 +118,6 @@ class CallGraph:
                     continue
                 if "@" in root.lower():
                     continue
-                # 61 needs 'mocks' for FirstDeposit
-                #if "mocks" in root.lower(): # 23-2021-08-notional
-                #    continue
                 if "mock" in root.lower() and "mocks" not in root.lower():
                     continue
                 continue_flag = False
@@ -143,9 +140,7 @@ class CallGraph:
         subprocess.run(["java", "-jar", jar_file, self.root, "callgraph.json"], stdout=subprocess.DEVNULL)
         self.call_data = json.load(open("callgraph.json", "r"))
 
-
     def __clean(self):
-        # clean parse result first
         self_file_to_remove_functions = {}
         for file, file_data in self.files.items():
             self_file_to_remove_functions[file] = {}
@@ -172,7 +167,6 @@ class CallGraph:
                     if function_data in self_file_to_remove_functions[file][contract_data["name"]]:
                         contract_data["functions"].remove(function_data)
 
-        # clean call data
         for file in self.call_data.copy():
             if file not in self.files:
                 self.call_data.pop(file)
@@ -220,7 +214,6 @@ class CallGraph:
                 if function not in self.call_data[file_][contract]:
                     continue
                 functions.extend(self.call_data[file_][contract][function])
-        # find functions in files
         result = []
         for file_ in self.files:
             for contract_ in self.files[file_]["subcontracts"]:
@@ -246,13 +239,6 @@ class CallGraph:
             for contract in self.files[file]["subcontracts"]:
                 for func in contract["functions"]:
                     yield file, contract, func 
-            #         file_func_question_map[file][contract["name"]][func["name"]] = []
-            #         func_text = "\n".join(open(file, errors='ignore').read().splitlines()[int(
-            #             func["loc"]["start"].split(":")[0])-1:int(func["loc"]["end"].split(":")[0])])
-            #         file_func_source_map[file][contract["name"]][func["name"]] = func_text
-            
-            # file_func_question_map[file] = {}
-            # file_func_source_map[file] = {}
 
     def get_function_src(self, file, func):
         func_loc = func["loc"]

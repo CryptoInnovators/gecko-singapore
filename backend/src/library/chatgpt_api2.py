@@ -95,19 +95,14 @@ class ChatGptApi(BaseGptApi):
 
 
 class PezzoGptApi(BaseGptApi):
-
-    # 并发可能会导致key错乱 
     def completion(self, prompt_name, variables, **kwargs):
         prompt_config = self.get_prompt_config(kwargs)
-        # print(prompt_config)
-
         if prompt_config['model'] == MODEL_GPT3:
             key = prompt_name + "__" + json.dumps(variables)
         else:
             key = prompt_config['model'] + "__" + prompt_name + "__" + json.dumps(variables)
         content = self.cache_manager.get_cache(key)
         if content is not None:
-            # print("from cache ", prompt_name)
             return content
 
         try:
@@ -138,13 +133,9 @@ class FakeChatGptApi(BaseGptApi):
     def init_conversation(self, initialal_prompt='You are a auditing expert for solidity smart contracts'):
         if self.conversation_id is not None:
             return
-
-        # token = os.environ.get("chatgpttoken")
         token = self.gpt_config.fake_gpt_token
         self.chatgpt = ChatgptToken(token, self.prompt_config['model'])
-
         self.conversation_id, result = self.chatgpt.init_conversation(initialal_prompt)
-
         current_time = datetime.now()
         formatted_time = current_time.strftime("%Y-%m-%d-%H-%M")
         self.chatgpt.change_title(self.conversation_id, formatted_time)
@@ -175,7 +166,6 @@ def get_response_pezzo2(prompt):
 
 
 def test():
-    # engines = ['pezzo', 'chatgpt', 'fake_chatgpt']
     engines = ['fake_chatgpt']
     for engine in engines:
         gpt_api = createGptApi(engine)
@@ -183,20 +173,14 @@ def test():
         response = gpt_api.completion('hello', {})
         print(engine, response)
 
-    # content = get_response_pezzo("function_type", {})
-    # print(content)
-
-
 def test_pezzo_switch_34():
     gpt_api = createGptApi('pezzo')
     gpt_api.init_conversation()
     response = gpt_api.completion('hello', {}, model=MODEL_GPT3)
     response4 = gpt_api.completion('hello2', {}, model=MODEL_GPT4)
-
     print("gpt3.5", response)
     print("gpt4", response4)
 
 
 if __name__ == "__main__":
-    # test()
     test_pezzo_switch_34()

@@ -1,6 +1,6 @@
 {
-    "reentrancyvuln5":{
-        "path":"reentrancyvuln5",
+    "reentrancytest":{
+        "path":"reentrancytest",
         "files":[],
         "functions":[]
     }

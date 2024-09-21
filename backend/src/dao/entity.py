@@ -75,8 +75,6 @@ class Project_Task(Base):
         self.business_flow_context=business_flow_context
         self.if_business_flow_scan=if_business_flow_scan
 
-
-
     def as_dict(self):
         return {
             'name': self.name,
@@ -123,7 +121,6 @@ class Project_Task(Base):
         return None if result == '' else result
     def get_key(self):
         key = "/".join([self.name, self.content,self.keyword])
-        # key = str(random.random())
         return str_hash(key)
     def get_similarity_with_rule(self):
         result = self.similarity_with_rule

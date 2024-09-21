@@ -4,10 +4,7 @@ import json
 import os
 
 class ChatgptToken:
-    ##ref
-    ##https://platform.openai.com/docs/api-reference/making-requests
-    ##https://github.com/zhile-io/pandora/
-    def __init__(self, token, model, username = None, password = None): #todo 使用username/password refresh
+    def __init__(self, token, model, username = None, password = None):
         self.username = username
         self.password = password
         self.access_token = None
@@ -19,7 +16,6 @@ class ChatgptToken:
             'Authorization': "Bearer " + token
         }
         self.model = model
-        #self.authenticate()
 
     def get_models(self):
         response = requests.get(
@@ -40,7 +36,7 @@ class ChatgptToken:
                 }
             ],
             "parent_message_id": str(uuid.uuid4()),
-            "model": self.model, #gpt-4
+            "model": self.model, 
             "plugin_ids": [],
             "timezone_offset_min": -480,
             "suggestions": [],
@@ -91,9 +87,7 @@ class ChatgptToken:
                 }
             ],
             "conversation_id": conversation_id,
-            #"parent_message_id":parent_message_id,
-            "model": prompt_config['model'], #gpt-4
-            #"plugin_ids": [],
+            "model": prompt_config['model'], 
             "timezone_offset_min": -480,
             "suggestions": [],
             "history_and_training_disabled": False,

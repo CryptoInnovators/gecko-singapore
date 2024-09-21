@@ -9,7 +9,5 @@ def strip_file_names(content):
 def str_hash(str):
     md5_hash = hashlib.md5()
     md5_hash.update(str.encode('utf-8'))
-
-    # 生成MD5哈希值
     md5_result = md5_hash.hexdigest()
     return md5_result

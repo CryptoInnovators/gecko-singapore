@@ -44,9 +44,6 @@ class Chat:
                 if GPT4:
                     openai.api_key = GPT4_API
                     response = openai.ChatCompletion.create(
-                        # model="gpt-3.5-turbo-0301",
-                        # model="gpt-3.5-turbo-0613",
-                        # model="gpt-3.5-turbo",
                         model="gpt-4",
                         messages = self.currentSession,
                         temperature = 0,
@@ -55,9 +52,6 @@ class Chat:
                 elif GPT35_16K:
                     openai.api_key = GPT4_API
                     response = openai.ChatCompletion.create(
-                        # model="gpt-3.5-turbo-0301",
-                        # model="gpt-3.5-turbo-0613",
-                        # model="gpt-3.5-turbo",
                         model="gpt-3.5-turbo-16k",
                         messages = self.currentSession,
                         temperature = 0,
@@ -67,9 +61,6 @@ class Chat:
                     openai.api_key = OPENAI_APIS[key_id]
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo-0301",
-                        # model="gpt-3.5-turbo-0613",
-                        # model="gpt-3.5-turbo",
-                        # model="gpt-4",
                         messages = self.currentSession,
                         temperature = 0,
                         top_p = 1.0
@@ -80,7 +71,6 @@ class Chat:
                     key_id = 0
                     logger.warning("Trigger rate limit error for 2 times, skip")
                     return "KeySentence: "
-                    # time.sleep(30)
                 else:
                     key_id += 1
                     logger.warning("Trigger rate limit error, change key")
@@ -99,31 +89,21 @@ class Chat:
                 if "502" in e5._message:
                     logger.warning("502 Bad Gateway, Retry")
                     logger.warning(traceback.format_exc())
-        # response = openai.Completion.create(
-        #     # model="gpt-3.5-turbo",
-        #     model="text-davinci-003",
-        #     messages = self.currentSession,
-        #     # temperature = 0.3
-        # )
 
         if GPT4:
             global tokens_sent_gpt4
             global tokens_received_gpt4
-
             tokens_sent_gpt4.value += len(encoder.encode(SYSTEM_MESSAGE))
             tokens_sent_gpt4.value += len(encoder.encode(message))
             tokens_received_gpt4.value += len(encoder.encode(response['choices'][0]['message']['content']))
         else:
             global tokens_sent
             global tokens_received
-
             tokens_sent.value += len(encoder.encode(SYSTEM_MESSAGE))
             tokens_sent.value += len(encoder.encode(message))
             tokens_received.value += len(encoder.encode(response['choices'][0]['message']['content']))
 
         self.currentSession.append(response['choices'][0]['message'])
-
-
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         logger.info(f"Received message: \n{response['choices'][0]['message']['content']}")
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
