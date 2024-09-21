@@ -96,7 +96,7 @@ if __name__ == '__main__':
         engine = create_engine(db_url_from)
         dataset_base = "./src/dataset/agent-v1-c4"
         projects = load_dataset(dataset_base)
-        project_id = 'reentrancytest'
+        project_id = 'reentrancytestnew'
         project_path = ''
         project = Project(project_id, projects[project_id])
         cmd = 'detect_vul'
