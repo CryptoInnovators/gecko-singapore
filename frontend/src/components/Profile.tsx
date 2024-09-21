@@ -64,7 +64,7 @@ export default function Profile() {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align='end' className="tweet-border bg-black/80 backdrop-blur-lg">
+          <DropdownMenuContent align='end' className="tweet-border bg-background/60 backdrop-blur-lg">
             <div className='flex items-center justify-start gap-2 p-2'>
               <div className='flex flex-col space-y-0.5 leading-none'>
                 {user.display_name && (

@@ -66,7 +66,7 @@ const Page = ({ params }: PageProps) => {
   ];
 
   return (
-    <div className="flex h-screen bg-black text-gray-300">
+    <div className="flex h-screen text-gray-300">
       <div className="w-5/12 overflow-auto p-6 border-r border-gray-800">
         <CodeRenderer code={code} />
       </div>
