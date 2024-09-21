@@ -9,6 +9,7 @@ import { supabaseBrowser } from '../lib/supabase/browser'
 import { v4 as uuidv4 } from "uuid"
 import { Input } from './ui/input'
 import { PlusCircle, Github, Upload, FileIcon } from 'lucide-react'
+import ScanSimulation from './ScanSimulation'
 
 const supabase = supabaseBrowser()
 
@@ -18,6 +19,7 @@ export default function UploadButton() {
   const [showContractUpload, setShowContractUpload] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [showScanSimulation, setShowScanSimulation] = useState<boolean>(false)
 
   useEffect(() => {
     if (isOpen) {
@@ -60,12 +62,8 @@ export default function UploadButton() {
         console.error('Error inserting scan record:', scanError)
       } else {
         console.log('Scan record inserted successfully:', scanData)
+        setShowScanSimulation(true)
       }
-
-      setIsOpen(false)
-      setShowContractUpload(false)
-      setProjectName('')
-      setFile(null)
     } else {
       console.error('Error uploading file:', error)
     }
@@ -85,6 +83,14 @@ export default function UploadButton() {
     }
   }
 
+  const handleScanComplete = () => {
+    setIsOpen(false)
+    setShowContractUpload(false)
+    setProjectName('')
+    setFile(null)
+    setShowScanSimulation(false)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={(v) => {
       if (!v) {
@@ -92,6 +98,7 @@ export default function UploadButton() {
         setShowContractUpload(false)
         setProjectName('')
         setFile(null)
+        setShowScanSimulation(false)
       }
     }}>
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
@@ -112,7 +119,9 @@ export default function UploadButton() {
               zIndex: 9999,
             }}
           >
-            {!showContractUpload ? (
+            {showScanSimulation ? (
+              <ScanSimulation onComplete={handleScanComplete} />
+            ) : !showContractUpload ? (
               <div className="grid gap-4 pt-6">
                 {uploadOptions.map((option, index) => (
                   <Button
@@ -146,7 +155,7 @@ export default function UploadButton() {
                   <Dropzone
                     onDrop={(acceptedFiles) => setFile(acceptedFiles[0])}
                     accept={{
-                      'application/octet-stream': ['.cairo']
+                      'application/octet-stream': ['.cairo', '.sol']
                     }}
                     maxFiles={1}
                   >
