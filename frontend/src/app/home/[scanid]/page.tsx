@@ -174,7 +174,7 @@ const Page = ({ params }: PageProps) => {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-lg font-medium mb-2 text-white">Instruction Coverage</h3>
+                    <h3 className="text-sm font-medium mb-2 text-white">Instruction Coverage</h3>
                     <ResponsiveContainer width="100%" height={200}>
                       <LineChart data={coverageData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -186,7 +186,7 @@ const Page = ({ params }: PageProps) => {
                     </ResponsiveContainer>
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium mb-2 text-white">Branch Coverage</h3>
+                    <h3 className="text-sm font-medium mb-2 text-white">Branch Coverage</h3>
                     <ResponsiveContainer width="100%" height={200}>
                       <LineChart data={coverageData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
