@@ -10,3 +10,21 @@
     </span>
 </p>
 
+## What is Gecko?
+
+## Features
+
+## Demo
+
+## Installation
+
+## Images
+
+## Roadmap
+
+## Team
+
+### Attribution & Research
+
+## Contributing & License
+Help us build Gecko! Gecko is an open-source software licensed under the [MIT License](https://github.com/nkoorty/gecko-singapore/blob/main/LICENSE).
