@@ -13,6 +13,8 @@
 ## What is Gecko?
 
 ## Features
+- [Solidity Grammar Parser](https://github.com/OpenZeppelin/sgp)
+- [Modified Caracal](https://github.com/crytic/caracal)
 
 ## Demo
 
@@ -27,6 +29,10 @@
 ## Team
 
 ## Attribution & Research
+Based on research from:
+- [LLM4FUZZ: Guided Fuzzing of Smart Contract with Large Language Models](https://arxiv.org/pdf/2401.11108)
+- [Large Language Monkeys: Scaling Inference Compute with Repeated Sampling](https://arxiv.org/pdf/2407.21787v1)
+- [CONFUZZIUS: A Data Dependency-Aware Hybrid Fuzzer for Smart Contracts](https://arxiv.org/pdf/2005.12156)
 
 ## Contributing & License
 Help us build Gecko! Gecko is an open-source software licensed under the [MIT License](https://github.com/nkoorty/gecko-singapore/blob/main/LICENSE).
