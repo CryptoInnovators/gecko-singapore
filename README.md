@@ -25,6 +25,17 @@
 
 ## Installation
 
+Prerequisites:
+- Open AI Key (gpt-4o-mini)
+- PostgreSQL
+
+1. Clone the Gecko repository:
+   ```sh
+   https://github.com/nkoorty/gecko-singapore
+   ```
+
+2. 
+
 ## Images
 
 ## Results
