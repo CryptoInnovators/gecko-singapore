@@ -8,12 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
+import { Spinner } from "@nextui-org/spinner";
 
 export default function Dashboard() {
   const {data:user, isLoading} = useUser();
   
   if(isLoading){
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner color="default"/>
+      </div>
+    );
   }
 
   return (

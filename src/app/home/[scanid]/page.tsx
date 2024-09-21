@@ -67,10 +67,10 @@ const Page = ({ params }: PageProps) => {
 
   return (
     <div className="flex h-screen bg-black text-gray-300">
-      <div className="w-1/2 overflow-auto p-6 border-r border-gray-800">
+      <div className="w-5/12 overflow-auto p-6 border-r border-gray-800">
         <CodeRenderer code={code} />
       </div>
-      <div className="w-1/2 overflow-auto p-6">
+      <div className="w-7/12 overflow-auto p-6">
         <Card className="bg-gray-900 border-gray-800 mb-6">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-4">
