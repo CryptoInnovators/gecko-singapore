@@ -64,13 +64,40 @@ const Page = ({ params }: PageProps) => {
   if (error) return <div className="text-white">Error loading user data.</div>;
   if (!scan) return <div className="text-white">No scan found</div>;
 
-  const coverageData = [
+  const instructionCoverageData = [
     { time: 0, coverage: 0 },
-    { time: 1, coverage: 20 },
-    { time: 2, coverage: 40 },
-    { time: 3, coverage: 60 },
-    { time: 4, coverage: 80 },
-    { time: 5, coverage: 100 },
+    { time: 5, coverage: 15 },
+    { time: 10, coverage: 28 },
+    { time: 15, coverage: 42 },
+    { time: 20, coverage: 53 },
+    { time: 25, coverage: 67 },
+    { time: 30, coverage: 79 },
+    { time: 35, coverage: 88 },
+    { time: 40, coverage: 92 },
+    { time: 45, coverage: 94 },
+    { time: 50, coverage: 95 },
+    { time: 55, coverage: 95 },
+    { time: 60, coverage: 95 },
+    { time: 65, coverage: 95 },
+    { time: 70, coverage: 95 },
+  ];
+
+  const branchCoverageData = [
+    { time: 0, coverage: 0 },
+    { time: 5, coverage: 8 },
+    { time: 10, coverage: 19 },
+    { time: 15, coverage: 31 },
+    { time: 20, coverage: 45 },
+    { time: 25, coverage: 57 },
+    { time: 30, coverage: 68 },
+    { time: 35, coverage: 76 },
+    { time: 40, coverage: 82 },
+    { time: 45, coverage: 86 },
+    { time: 50, coverage: 88 },
+    { time: 55, coverage: 89 },
+    { time: 60, coverage: 89 },
+    { time: 65, coverage: 89 },
+    { time: 70, coverage: 89 },
   ];
 
   const vulnerabilities = [
@@ -177,7 +204,7 @@ const Page = ({ params }: PageProps) => {
                   <div>
                     <h3 className="text-sm font-medium mb-2 text-white">Instruction Coverage</h3>
                     <ResponsiveContainer width="100%" height={200} className='pr-4'>
-                      <LineChart data={coverageData} margin={{ left: -30 }}>
+                      <LineChart data={instructionCoverageData} margin={{ left: -30 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }}/>
                         <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
@@ -189,7 +216,7 @@ const Page = ({ params }: PageProps) => {
                   <div>
                     <h3 className="text-sm font-medium mb-2 text-white">Branch Coverage</h3>
                     <ResponsiveContainer width="100%" height={200} className='pr-4'>
-                    <LineChart data={coverageData} margin={{ left: -30 }}>
+                    <LineChart data={branchCoverageData} margin={{ left: -30 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
                         <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
@@ -208,7 +235,6 @@ const Page = ({ params }: PageProps) => {
           <Card className="bg-accent/50 border-gray-800 mb-6">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-white">Call Graph</CardTitle>
-              <button className="bg-green-600 text-white px-3 py-1 rounded text-sm">Create alert</button>
             </CardHeader>
             <CardContent>
               <div className="bg-accent h-40 rounded flex items-center justify-center text-white">
