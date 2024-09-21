@@ -32,6 +32,8 @@
 ## Roadmap
 
 ## Team
+- [JJ](https://www.linkedin.com/in/jeevan-jutla/): ex-Binance ex-Intellegence Security Researcher, interested in AI for offensive security
+- [Artemiy](https://www.linkedin.com/in/artemiy-malyshau/): 
 
 ## Attribution & Research
 Based on research from:
