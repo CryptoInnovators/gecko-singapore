@@ -7,8 +7,13 @@
 <p align="center" style="display: flex; justify-content: center; align-items: center;">
     <span style="display: inline-flex; align-items: center; background-color: #1c1c1c; padding: 5px; border-radius: 6px;">
         <span style="margin: 0 10px; color: white; font-size: 14px;"></span>
+         <a href="https://x.com/NethermindSec">
+            <img src="https://github.com/user-attachments/assets/e39a568b-7f38-4c7e-ad2e-43c72ff6815a" style="height: 21px;"/>
+        </a>
     </span>
 </p>
+
+
 
 ## What is Gecko?
 
