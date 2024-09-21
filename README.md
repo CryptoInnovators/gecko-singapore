@@ -24,7 +24,7 @@
 
 ## Team
 
-### Attribution & Research
+## Attribution & Research
 
 ## Contributing & License
 Help us build Gecko! Gecko is an open-source software licensed under the [MIT License](https://github.com/nkoorty/gecko-singapore/blob/main/LICENSE).
