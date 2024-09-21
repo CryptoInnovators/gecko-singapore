@@ -1,6 +1,6 @@
 {
-    "reentrancytestnew":{
-        "path":"reentrancytestnew",
+    "reentrancybug":{
+        "path":"reentrancybug",
         "files":[],
         "functions":[]
     }
