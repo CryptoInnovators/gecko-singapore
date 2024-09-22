@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useUser from '../../hook/useUser';
 import { getScan, getFile } from '../../../utils/scanUtils';
 import CodeRenderer from '../../../components/CodeRenderer/CodeRenderer';
@@ -8,9 +8,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { AlertCircle } from 'lucide-react';
-import { format } from 'date-fns';
-import { Spinner } from '@nextui-org/spinner';
-import { transform } from 'next/dist/build/swc';
+import { format, differenceInSeconds } from 'date-fns';
 
 type Scan = {
   id: string;
@@ -36,6 +34,17 @@ const Page = ({ params }: PageProps) => {
   const [code, setCode] = useState<string>('');
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [coveredLines, setCoveredLines] = useState<number[]>([]);
+  const [visibleVulnerabilities, setVisibleVulnerabilities] = useState(0);
+  const [instructionCoverageData, setInstructionCoverageData] = useState<Array<{ time: number; coverage: number }>>([]);
+  const [branchCoverageData, setBranchCoverageData] = useState<Array<{ time: number; coverage: number }>>([]);
+  const [highestCoverage, setHighestCoverage] = useState(0);
+  const [staticIssues, setStaticIssues] = useState(0);
+  const [dynamicIssues, setDynamicIssues] = useState(0);
+  const duration = 90;
+
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchScanDetails = async () => {
@@ -60,50 +69,112 @@ const Page = ({ params }: PageProps) => {
     fetchScanDetails();
   }, [user, scanid]);
 
+  useEffect(() => {
+    if (scan) {
+      const lastUpdated = new Date(scan.uploaded_at);
+      const now = new Date();
+      const secondsSinceUpdate = differenceInSeconds(now, lastUpdated) - 8 * 60 * 60;
+
+      if (secondsSinceUpdate <= 300) { // within 5 minutes
+        const remainingSeconds = 300 - secondsSinceUpdate;
+        const progressIncrement = 100 / (remainingSeconds / 2);
+
+        intervalRef.current = setInterval(() => {
+          setProgress((prevProgress) => {
+            const newProgress = Math.min(prevProgress + progressIncrement, 100);
+            updateUIElements(newProgress);
+            return newProgress;
+          });
+        }, 2000);
+
+        return () => {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+      } else {
+        setProgress(100);
+        updateUIElements(100);
+      }
+    }
+  }, [scan]);
+
+  const updateUIElements = (progress: number) => {
+    const totalLines = code.split('\n').length;
+    const linesToCover = Math.floor((progress / 100) * totalLines);
+    const newCoveredLines = Array.from({ length: linesToCover }, (_, i) => i + 1);
+    setCoveredLines(newCoveredLines);
+
+    const totalVulnerabilities = 3; // Assuming 3 vulnerabilities
+    const visibleVulns = Math.min(Math.floor((progress / 100) * totalVulnerabilities), totalVulnerabilities);
+    setVisibleVulnerabilities(visibleVulns);
+
+    const instructionData = [
+      { time: 0, coverage: 0 },
+      { time: 5, coverage: Math.min(8, progress * 0.08) },
+      { time: 10, coverage: Math.min(15, progress * 0.15) },
+      { time: 15, coverage: Math.min(21, progress * 0.21) },
+      { time: 20, coverage: Math.min(26, progress * 0.26) },
+      { time: 25, coverage: Math.min(30, progress * 0.30) },
+      { time: 30, coverage: Math.min(34, progress * 0.34) },
+      { time: 35, coverage: Math.min(37, progress * 0.37) },
+      { time: 40, coverage: Math.min(40, progress * 0.40) },
+      { time: 45, coverage: Math.min(42, progress * 0.42) },
+      { time: 50, coverage: Math.min(44, progress * 0.44) },
+      { time: 55, coverage: Math.min(46, progress * 0.46) },
+      { time: 60, coverage: Math.min(48, progress * 0.48) },
+      { time: 65, coverage: Math.min(49, progress * 0.49) },
+      { time: 70, coverage: Math.min(50, progress * 0.50) },
+      { time: 75, coverage: Math.min(51, progress * 0.51) },
+      { time: 80, coverage: Math.min(52, progress * 0.52) },
+      { time: 85, coverage: Math.min(53, progress * 0.53) },
+      { time: 90, coverage: Math.min(54, progress * 0.54) },
+      { time: 95, coverage: Math.min(55, progress * 0.55) },
+      { time: 100, coverage: Math.min(56, progress * 0.56) },
+    ];
+    setInstructionCoverageData(instructionData);
+
+    const branchData = [
+      { time: 0, coverage: 0 },
+      { time: 5, coverage: Math.min(7, progress * 0.07) },
+      { time: 10, coverage: Math.min(13, progress * 0.13) },
+      { time: 15, coverage: Math.min(18, progress * 0.18) },
+      { time: 20, coverage: Math.min(22, progress * 0.22) },
+      { time: 25, coverage: Math.min(26, progress * 0.26) },
+      { time: 30, coverage: Math.min(29, progress * 0.29) },
+      { time: 35, coverage: Math.min(32, progress * 0.32) },
+      { time: 40, coverage: Math.min(35, progress * 0.35) },
+      { time: 45, coverage: Math.min(37, progress * 0.37) },
+      { time: 50, coverage: Math.min(39, progress * 0.39) },
+      { time: 55, coverage: Math.min(41, progress * 0.41) },
+      { time: 60, coverage: Math.min(43, progress * 0.43) },
+      { time: 65, coverage: Math.min(44, progress * 0.44) },
+      { time: 70, coverage: Math.min(45, progress * 0.45) },
+      { time: 75, coverage: Math.min(46, progress * 0.46) },
+      { time: 80, coverage: Math.min(47, progress * 0.47) },
+      { time: 85, coverage: Math.min(48, progress * 0.48) },
+      { time: 90, coverage: Math.min(49, progress * 0.49) },
+      { time: 95, coverage: Math.min(50, progress * 0.50) },
+      { time: 100, coverage: Math.min(51, progress * 0.51) },
+    ];
+    setBranchCoverageData(branchData);
+
+    const currentInstructionCoverage = instructionData[instructionData.length - 1].coverage;
+    const currentBranchCoverage = branchData[branchData.length - 1].coverage;
+    const currentHighestCoverage = Math.max(currentInstructionCoverage, currentBranchCoverage);
+    setHighestCoverage(Math.round(currentHighestCoverage));
+
+    const newStaticIssues = Math.min(0, 0);
+    const newDynamicIssues = Math.min(1, Math.floor(progress / 20));
+    setStaticIssues(newStaticIssues);
+    setDynamicIssues(newDynamicIssues);
+    setVisibleVulnerabilities(newStaticIssues + newDynamicIssues);
+  };
+
   if (userLoading || isLoading) return <div className="text-white">Loading...</div>;
   if (error) return <div className="text-white">Error loading user data.</div>;
   if (!scan) return <div className="text-white">No scan found</div>;
 
-  const instructionCoverageData = [
-    { time: 0, coverage: 0 },
-    { time: 5, coverage: 15 },
-    { time: 10, coverage: 28 },
-    { time: 15, coverage: 42 },
-    { time: 20, coverage: 53 },
-    { time: 25, coverage: 67 },
-    { time: 30, coverage: 79 },
-    { time: 35, coverage: 88 },
-    { time: 40, coverage: 92 },
-    { time: 45, coverage: 94 },
-    { time: 50, coverage: 95 },
-    { time: 55, coverage: 95 },
-    { time: 60, coverage: 95 },
-    { time: 65, coverage: 95 },
-    { time: 70, coverage: 95 },
-  ];
-
-  const branchCoverageData = [
-    { time: 0, coverage: 0 },
-    { time: 5, coverage: 8 },
-    { time: 10, coverage: 19 },
-    { time: 15, coverage: 31 },
-    { time: 20, coverage: 45 },
-    { time: 25, coverage: 57 },
-    { time: 30, coverage: 68 },
-    { time: 35, coverage: 76 },
-    { time: 40, coverage: 82 },
-    { time: 45, coverage: 86 },
-    { time: 50, coverage: 88 },
-    { time: 55, coverage: 89 },
-    { time: 60, coverage: 89 },
-    { time: 65, coverage: 89 },
-    { time: 70, coverage: 89 },
-  ];
-
   const vulnerabilities = [
-    { title: "[Fund Loss] Anyone can earn 20,000 ETH by interacting with the provided contracts", description: "A critical vulnerability allowing unauthorized fund withdrawal has been detected.", confidence: 90, location: "Check Exploit for more details." },
-    { title: "Reentrancy", description: "A potential reentrancy issue was found in the withdraw function.", confidence: 75, location: "line 105" },
-    { title: "Uninitialized Storage Pointer", description: "An uninitialized storage pointer was detected, which could lead to unexpected behavior.", confidence: 85, location: "line 78" },
+    { title: "Reentrancy Vulnerability", description: "The vulnerability lies in the timing of updating the balance. In Solidity, the execution of the withdrawFunds function is atomic, but it does not prevent re-entrancy attacks. The logic currently deducts the balance only after initiating the external call to transfer Ether to msg.sender. During this transfer, if the recipient is another contract, that contract can execute a fallback function and call back into the withdrawFunds function before the balance has been deducted. What happens here is that if an attacker controls a contract that receives Ether, they can re-enter the withdrawFunds function while the original invocation still has control. This means they can call withdrawFunds multiple times before their balance is adjusted, effectively allowing them to withdraw more Ether than they actually have in their balance.", confidence: 94, location: "Lines 38-43" },
   ];
 
   return (
@@ -116,9 +187,6 @@ const Page = ({ params }: PageProps) => {
           <CardContent className="pt-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path clipRule="evenodd" d="M12.4961 16.5166C12.1887 16.6923 11.8113 16.6923 11.5039 16.5166L4.55163 12.5439C4.04076 12.252 3.89112 11.5842 4.22854 11.1022L11.1808 1.17043C11.5789 0.601717 12.4211 0.601718 12.8192 1.17043L19.7715 11.1022C20.1089 11.5842 19.9592 12.252 19.4484 12.5439L12.4961 16.5166ZM13.2404 17.8189L16.4471 15.9865C16.9106 15.7217 17.4109 16.2701 17.1048 16.7074L12.4096 23.4148C12.2105 23.6992 11.7894 23.6992 11.5904 23.4148L6.89511 16.7073C6.58899 16.27 7.08933 15.7216 7.55279 15.9864L10.7597 17.8189C11.5283 18.2581 12.4718 18.2581 13.2404 17.8189Z" fill="currentColor" fillRule="evenodd" />
-                </svg>
                 <div>
                   <h1 className="text-xl font-bold text-white">{scan.name}</h1>
                   <p className="text-sm text-gray-400">
@@ -126,123 +194,93 @@ const Page = ({ params }: PageProps) => {
                   </p>
                 </div>
               </div>
-              <span className="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">Completed</span>
+              <span className={`text-xs px-2 py-1 rounded ${progress < duration ? 'bg-gray-700 text-gray-300' : 'bg-green-900 text-green-300'}`}>
+                {progress < duration ? 'Scanning...' : 'Completed'}
+              </span>
             </div>
             <div className="grid grid-cols-3 gap-4 text-sm mt-4">
-              <div>
+            <div>
                 <p className="text-gray-400">Issues found</p>
-                <p className="font-semibold text-white">{scan.issues_found ?? 'N/A'}</p>
+                <p className="font-semibold text-white">{visibleVulnerabilities}</p>
               </div>
               <div>
                 <p className="text-gray-400">Duration</p>
-                <p className="font-semibold text-white">{scan.duration ? `${scan.duration} min` : 'N/A'}</p>
+                <p className="font-semibold text-white">N/A</p>
               </div>
               <div>
                 <p className="text-gray-400">Code Coverage</p>
                 <p className="font-semibold text-white">
-                  {typeof scan.code_coverage === 'number' ? `${scan.code_coverage.toFixed(2)}%` : 'N/A'}
+                  {highestCoverage}%
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="flex mb-4 space-x-2">
-          <button
-            className={`px-4 py-2 text-sm rounded-full ${activeTab === 'overview' ? 'bg-green-800 text-white' : 'bg-accent/50 text-gray-300'} transition-all duration-200`}
-            onClick={() => setActiveTab('overview')}
-          >
-            Overview
-          </button>
-          <button
-            className={`px-4 py-2 text-sm rounded-full ${activeTab === 'threatScan' ? 'bg-green-800 text-white' : 'bg-accent/50 text-gray-300'} transition-all duration-200`}
-            onClick={() => setActiveTab('threatScan')}
-          >
-            Threat Scan
-          </button>
-        </div>
-        
-        {activeTab === 'overview' && (
-          <>
-            <Card className="bg-accent/50 border-gray-800 mb-2">
-              <CardHeader>
-                <CardTitle className="text-white">Issues Found</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="space-x-2">
-                    <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Dynamic Analysis (1)</button>
-                    <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Static Analysis (124)</button>
-                  </div>
-                </div>
-                <Accordion type="single" collapsible className="space-y-2">
-                  {vulnerabilities.map((vuln, index) => (
-                    <AccordionItem value={`item-${index}`} key={index} className="border border-gray-800 rounded">
-                      <AccordionTrigger className="px-4 py-3 hover:bg-accent/50 text-white transition-all duration-200">
-                        <div className="flex items-center space-x-2">
-                          <AlertCircle className="text-red-500" size={20} />
-                          <span>{vuln.title}</span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 py-3 bg-accent/50">
-                        <p className="mb-2">{vuln.description}</p>
-                        <p className="mb-1"><strong>Confidence:</strong> <span className="text-yellow-400">{vuln.confidence}%</span></p>
-                        <p><strong>Location:</strong> <span className="text-blue-400">{vuln.location}</span></p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          
-            <Card className="bg-accent/50 border-gray-800 mb-2">
-              <CardHeader>
-                <CardTitle className="text-white">Coverage Charts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-sm font-medium mb-2 text-white">Instruction Coverage</h3>
-                    <ResponsiveContainer width="100%" height={200} className='pr-4'>
-                      <LineChart data={instructionCoverageData} margin={{ left: -30 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }}/>
-                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                        <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
-                        <Line type="monotone" dataKey="coverage" stroke="#10B981" strokeWidth={2} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium mb-2 text-white">Branch Coverage</h3>
-                    <ResponsiveContainer width="100%" height={200} className='pr-4'>
-                    <LineChart data={branchCoverageData} margin={{ left: -30 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                        <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
-                        <Line type="monotone" dataKey="coverage" stroke="#3B82F6" strokeWidth={2} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {activeTab === 'threatScan' && (
-          <Card className="bg-accent/50 border-gray-800 mb-6">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-white">Call Graph</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-accent h-40 rounded flex items-center justify-center text-white">
-                Call Graph Visualization (Placeholder)
+        <Card className="bg-accent/50 border-gray-800 mb-2">
+          <CardHeader>
+            <CardTitle className="text-white">Issues Found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center mb-4">
+              <div className="space-x-2">
+                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Dynamic Analysis ({Math.min(1, Math.floor(progress / 20))})</button>
+                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Static Analysis ({Math.min(0, Math.floor(progress * 1.5))})</button>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+            <Accordion type="single" collapsible className="space-y-2">
+              {vulnerabilities.slice(0, visibleVulnerabilities).map((vuln, index) => (
+                <AccordionItem value={`item-${index}`} key={index} className="border border-gray-800 rounded">
+                  <AccordionTrigger className="px-4 py-3 hover:bg-accent/50 text-white transition-all duration-200">
+                    <div className="flex items-center space-x-2">
+                      <AlertCircle className="text-red-500" size={20} />
+                      <span>{vuln.title}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 py-3 bg-accent/50">
+                    <p className="mb-2">{vuln.description}</p>
+                    <p className="mb-1"><strong>Confidence:</strong> <span className="text-yellow-400">{vuln.confidence}%</span></p>
+                    <p><strong>Location:</strong> <span className="text-blue-400">{vuln.location}</span></p>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-accent/50 border-gray-800 mb-2">
+          <CardHeader>
+            <CardTitle className="text-white">Coverage Charts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h3 className="text-sm font-medium mb-2 text-white">Instruction Coverage</h3>
+                <ResponsiveContainer width="100%" height={200} className='pr-4'>
+                  <LineChart data={instructionCoverageData} margin={{ left: -30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                    <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
+                    <Line type="monotone" dataKey="coverage" stroke="#10B981" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium mb-2 text-white">Branch Coverage</h3>
+                <ResponsiveContainer width="100%" height={200} className='pr-4'>
+                  <LineChart data={branchCoverageData} margin={{ left: -30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="time" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                    <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: 'white' }} />
+                    <Line type="monotone" dataKey="coverage" stroke="#3B82F6" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

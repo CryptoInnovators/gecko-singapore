@@ -35,7 +35,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ name, status }) => (
     )}
     {status === 'not-started' && (
       <div className="rounded-full border-2 border-gray-600 p-1">
-        <div className="h-3 w-3" />
+        <div className="h-2 w-2" />
       </div>
     )}
     <span className={`text-gray-300 ${status === 'pending' ? 'text-blue-400' : ''} ${status === 'completed' ? 'text-green-400' : ''}`}>{name}</span>

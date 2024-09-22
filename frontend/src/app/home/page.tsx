@@ -23,7 +23,7 @@ export default function Dashboard() {
 
   return (
     <main className='mx-auto max-w-7xl px-4 py-6'>
-      <Card className="bg-[#111] text-white gap-6">
+      <Card className=" text-white gap-6">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-bold">Projects</CardTitle>
           <UploadButton />

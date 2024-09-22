@@ -24,12 +24,19 @@ export default function Profile() {
   }
 
   const handleLogout = async () => {
-    const supabase = supabaseBrowser();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    router.refresh();
-    if (protectedPaths.includes(pathname)) {
-      router.replace("/auth?next=" + pathname);
+    try {
+      const supabase = supabaseBrowser();
+      await supabase.auth.signOut();
+      queryClient.clear();
+      router.refresh();
+      if (protectedPaths.includes(pathname)) {
+        router.replace("/auth?next=" + pathname);
+      } else {
+        router.push('/'); // Redirect to home page or login page
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Optionally, show an error message to the user
     }
   }
 
@@ -101,8 +108,8 @@ export default function Profile() {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className='cursor-pointer'>
-              <div onClick={handleLogout} className="py-2 font-bold text-red-500">Log out</div>
+            <DropdownMenuItem className='cursor-pointer' onSelect={handleLogout}>
+              <div className="py-2 font-bold text-red-500">Log out</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

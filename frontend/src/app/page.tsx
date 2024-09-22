@@ -10,7 +10,7 @@ export default function Home() {
 
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
           Find <span className="text-red-600">Vulnerabilities</span> in your
-          Clarity Contracts
+          Smart Contracts
         </h1>
         <p className="mt-5 max-w-prose text-white sm:text-lg">
           Gecko automatically finds security vulnerabilities in your contracts.

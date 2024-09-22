@@ -2,7 +2,7 @@ import useUser from '../app/hook/useUser';
 import React, { useEffect, useState } from 'react';
 import { Trash2, PlusCircle, FileIcon } from 'lucide-react';
 import Link from 'next/link';
-import { format } from 'date-fns';
+import { format, differenceInSeconds } from 'date-fns';
 import { getScan, deleteScan } from '../utils/scanUtils';
 import UploadButton from './UploadButton';
 import Image from 'next/image';
@@ -21,6 +21,8 @@ type Scan = {
 export default function Scans() {
   const { data: user, isLoading, error } = useUser();
   const [scans, setScans] = useState<Scan[]>([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const scanDuration = 300; // 5 minutes in seconds
 
   useEffect(() => {
     if (user && user.id) {
@@ -33,6 +35,11 @@ export default function Scans() {
     }
   }, [user]);
 
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const handleDelete = async (e: React.MouseEvent, scanId: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -44,53 +51,67 @@ export default function Scans() {
     }
   };
 
+  const isScanning = (uploadedAt: string): boolean => {
+    const uploadTime = new Date(uploadedAt);
+    const elapsedSeconds = differenceInSeconds(currentTime, uploadTime);
+    console.log(elapsedSeconds);
+    return elapsedSeconds - (8*60*60) < scanDuration;
+  };
+
   if (isLoading) return <div className="text-white">Loading...</div>;
   if (error) return <div className="text-white">Error loading user data.</div>;
 
   return (
     <div className="text-white">
-      <div className="bg-[#111] rounded-lg">
+      <div className="rounded-lg">
         {scans.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
             {scans
               .sort((a, b) => new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime())
-              .map(scan => (
-                <Link href={`/home/${scan.id}`} key={scan.id}>
-                  <div className="bg-[#171717] rounded-lg p-4 hover:bg-[#1a1a1a] transition-all duration-200 tweet-border h-[160px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <h3 className="text-md font-semibold">{scan.name}</h3>
-                          <p className="text-xs text-gray-400">Last updated: {format(new Date(scan.uploaded_at), 'MM/dd/yyyy, h:mm:ss a')}</p>
+              .map(scan => {
+                const scanning = isScanning(scan.uploaded_at);
+                return (
+                  <Link href={`/home/${scan.id}`} key={scan.id}>
+                    <div className="bg-[#171717] rounded-lg p-4 hover:bg-[#1a1a1a] transition-all duration-200 tweet-border h-[160px] flex flex-col justify-between">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div>
+                            <h3 className="text-md font-semibold">{scan.name}</h3>
+                            <p className="text-xs text-gray-400">Last updated: {format(new Date(scan.uploaded_at), 'MM/dd/yyyy, h:mm:ss a')}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-xs px-2 py-1 rounded ${scanning ? 'bg-gray-700 text-gray-300' : 'bg-green-900 text-green-300'}`}>
+                            {scanning ? 'Scanning...' : 'Completed'}
+                          </span>
+                          <button 
+                            className="text-gray-400 hover:text-red-600 transition-all duration-300" 
+                            onClick={(e) => handleDelete(e, scan.id)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">Completed</span>
-                        <button 
-                          className="text-gray-400 hover:text-red-600 transition-all duration-300" 
-                          onClick={(e) => handleDelete(e, scan.id)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      <div className="grid grid-cols-3 gap-4 text-sm mt-auto">
+                        <div>
+                          <p className="text-gray-400">Issues found</p>
+                          <p className="font-semibold">{scanning ? 'N/A' : (scan.issues_found ?? 'N/A')}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Duration</p>
+                          <p className="font-semibold">N/A</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Code Coverage</p>
+                          <p className="font-semibold">
+                            {scanning ? 'N/A' : (typeof scan.code_coverage === 'number' ? `${scan.code_coverage.toFixed(2)}%` : 'N/A')}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm mt-auto">
-                      <div>
-                        <p className="text-gray-400">Issues found</p>
-                        <p className="font-semibold">{scan.issues_found ?? 'N/A'}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Duration</p>
-                        <p className="font-semibold">{scan.duration ? `${scan.duration} min` : 'N/A'}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Code Coverage</p>
-                        <p className="font-semibold">{typeof scan.code_coverage === 'number' ? `${scan.code_coverage.toFixed(2)}%` : 'N/A'}</p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12">
