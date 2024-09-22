@@ -23,7 +23,9 @@
 
 ## Demo
 
-![GeckoArch](https://github.com/user-attachments/assets/5f9c8049-29a4-45d2-8b4e-59435c83d5be)
+<img src="https://github.com/user-attachments/assets/a41723a0-7580-41ed-86dd-11027938300f" alt="Gecko_Arch" width="200"/>
+
+
 
 
 ## Installation
