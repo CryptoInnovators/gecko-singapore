@@ -13,7 +13,7 @@
     </span>
 </p>
 
-
+[ETH Global Showcase](https://ethglobal.com/showcase/gecko-m5ezr) | [Demo Video](https://youtu.be/UEkJAnUNeXs)
 
 ## What is Gecko?
 Gecko is an autonomous multi-agent AI auditor that combines LLM’s with custom security tools like fuzzers and static analysers to replicate a hacker's intuition and detect vulnerabilities in Solidity and Cairo smart contracts.
@@ -46,8 +46,6 @@ Prerequisites:
 
         npm i
         npm run dev
-
-3. Run the agentic workflow backend
 
 ## Images
 <p align="center">
