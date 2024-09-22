@@ -42,7 +42,6 @@ const Page = ({ params }: PageProps) => {
   const [highestCoverage, setHighestCoverage] = useState(0);
   const [staticIssues, setStaticIssues] = useState(0);
   const [dynamicIssues, setDynamicIssues] = useState(0);
-  const duration = 90;
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -97,85 +96,9 @@ const Page = ({ params }: PageProps) => {
     }
   }, [scan]);
 
-  const updateUIElements = (progress: number) => {
-    const totalLines = code.split('\n').length;
-    const linesToCover = Math.floor((progress / 100) * totalLines);
-    const newCoveredLines = Array.from({ length: linesToCover }, (_, i) => i + 1);
-    setCoveredLines(newCoveredLines);
-
-    const totalVulnerabilities = 3; // Assuming 3 vulnerabilities
-    const visibleVulns = Math.min(Math.floor((progress / 100) * totalVulnerabilities), totalVulnerabilities);
-    setVisibleVulnerabilities(visibleVulns);
-
-    const instructionData = [
-      { time: 0, coverage: 0 },
-      { time: 5, coverage: Math.min(8, progress * 0.08) },
-      { time: 10, coverage: Math.min(15, progress * 0.15) },
-      { time: 15, coverage: Math.min(21, progress * 0.21) },
-      { time: 20, coverage: Math.min(26, progress * 0.26) },
-      { time: 25, coverage: Math.min(30, progress * 0.30) },
-      { time: 30, coverage: Math.min(34, progress * 0.34) },
-      { time: 35, coverage: Math.min(37, progress * 0.37) },
-      { time: 40, coverage: Math.min(40, progress * 0.40) },
-      { time: 45, coverage: Math.min(42, progress * 0.42) },
-      { time: 50, coverage: Math.min(44, progress * 0.44) },
-      { time: 55, coverage: Math.min(46, progress * 0.46) },
-      { time: 60, coverage: Math.min(48, progress * 0.48) },
-      { time: 65, coverage: Math.min(49, progress * 0.49) },
-      { time: 70, coverage: Math.min(50, progress * 0.50) },
-      { time: 75, coverage: Math.min(51, progress * 0.51) },
-      { time: 80, coverage: Math.min(52, progress * 0.52) },
-      { time: 85, coverage: Math.min(53, progress * 0.53) },
-      { time: 90, coverage: Math.min(54, progress * 0.54) },
-      { time: 95, coverage: Math.min(55, progress * 0.55) },
-      { time: 100, coverage: Math.min(56, progress * 0.56) },
-    ];
-    setInstructionCoverageData(instructionData);
-
-    const branchData = [
-      { time: 0, coverage: 0 },
-      { time: 5, coverage: Math.min(7, progress * 0.07) },
-      { time: 10, coverage: Math.min(13, progress * 0.13) },
-      { time: 15, coverage: Math.min(18, progress * 0.18) },
-      { time: 20, coverage: Math.min(22, progress * 0.22) },
-      { time: 25, coverage: Math.min(26, progress * 0.26) },
-      { time: 30, coverage: Math.min(29, progress * 0.29) },
-      { time: 35, coverage: Math.min(32, progress * 0.32) },
-      { time: 40, coverage: Math.min(35, progress * 0.35) },
-      { time: 45, coverage: Math.min(37, progress * 0.37) },
-      { time: 50, coverage: Math.min(39, progress * 0.39) },
-      { time: 55, coverage: Math.min(41, progress * 0.41) },
-      { time: 60, coverage: Math.min(43, progress * 0.43) },
-      { time: 65, coverage: Math.min(44, progress * 0.44) },
-      { time: 70, coverage: Math.min(45, progress * 0.45) },
-      { time: 75, coverage: Math.min(46, progress * 0.46) },
-      { time: 80, coverage: Math.min(47, progress * 0.47) },
-      { time: 85, coverage: Math.min(48, progress * 0.48) },
-      { time: 90, coverage: Math.min(49, progress * 0.49) },
-      { time: 95, coverage: Math.min(50, progress * 0.50) },
-      { time: 100, coverage: Math.min(51, progress * 0.51) },
-    ];
-    setBranchCoverageData(branchData);
-
-    const currentInstructionCoverage = instructionData[instructionData.length - 1].coverage;
-    const currentBranchCoverage = branchData[branchData.length - 1].coverage;
-    const currentHighestCoverage = Math.max(currentInstructionCoverage, currentBranchCoverage);
-    setHighestCoverage(Math.round(currentHighestCoverage));
-
-    const newStaticIssues = Math.min(0, 0);
-    const newDynamicIssues = Math.min(1, Math.floor(progress / 20));
-    setStaticIssues(newStaticIssues);
-    setDynamicIssues(newDynamicIssues);
-    setVisibleVulnerabilities(newStaticIssues + newDynamicIssues);
-  };
-
   if (userLoading || isLoading) return <div className="text-white">Loading...</div>;
   if (error) return <div className="text-white">Error loading user data.</div>;
   if (!scan) return <div className="text-white">No scan found</div>;
-
-  const vulnerabilities = [
-    { title: "Reentrancy Vulnerability", description: "The vulnerability lies in the timing of updating the balance. In Solidity, the execution of the withdrawFunds function is atomic, but it does not prevent re-entrancy attacks. The logic currently deducts the balance only after initiating the external call to transfer Ether to msg.sender. During this transfer, if the recipient is another contract, that contract can execute a fallback function and call back into the withdrawFunds function before the balance has been deducted. What happens here is that if an attacker controls a contract that receives Ether, they can re-enter the withdrawFunds function while the original invocation still has control. This means they can call withdrawFunds multiple times before their balance is adjusted, effectively allowing them to withdraw more Ether than they actually have in their balance.", confidence: 94, location: "Lines 38-43" },
-  ];
 
   return (
     <div className="flex h-screen text-gray-300">
@@ -205,7 +128,7 @@ const Page = ({ params }: PageProps) => {
               </div>
               <div>
                 <p className="text-gray-400">Duration</p>
-                <p className="font-semibold text-white">N/A</p>
+                <p className="font-semibold text-white">{Math.floor(progress * 0.9)}s</p>
               </div>
               <div>
                 <p className="text-gray-400">Code Coverage</p>
@@ -224,8 +147,8 @@ const Page = ({ params }: PageProps) => {
           <CardContent>
             <div className="flex justify-between items-center mb-4">
               <div className="space-x-2">
-                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Dynamic Analysis ({Math.min(1, Math.floor(progress / 20))})</button>
-                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Static Analysis ({Math.min(0, Math.floor(progress * 1.5))})</button>
+                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Dynamic Analysis ({dynamicIssues})</button>
+                <button className="bg-gray-800 text-sm px-3 py-1 rounded text-white">Static Analysis ({staticIssues})</button>
               </div>
             </div>
             <Accordion type="single" collapsible className="space-y-2">
