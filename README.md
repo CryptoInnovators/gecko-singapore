@@ -47,6 +47,11 @@ Prerequisites:
 2. 
 
 ## Images
+<p align="center">
+    <img src=https://github.com/user-attachments/assets/ed23de00-e8ff-43b6-baa8-8e8cf8d3975c width=48%>
+    <img src=https://github.com/user-attachments/assets/e94d64bc-9661-49c1-8e80-81ef9845e9aa width=48%>
+    <img src=https://github.com/user-attachments/assets/b10f9b5b-c332-42ca-b61e-4004803280a3 width=48%>
+</p>
 
 ## Results
 Dataset based on scraped etherscan small [contracts](https://github.com/nkoorty/gecko-singapore/blob/main/dataset.txt)
@@ -60,7 +65,7 @@ Dataset based on scraped etherscan small [contracts](https://github.com/nkoorty/
 
 ## Team
 - [JJ](https://www.linkedin.com/in/jeevan-jutla/): ex-Binance ex-Intellegence Security Researcher, interested in AI for offensive security
-- [Artemiy](https://www.linkedin.com/in/artemiy-malyshau/): 
+- [Artemiy](https://www.linkedin.com/in/artemiy-malyshau/): Imperial College London Graduate, ex-Austrian Gov.
 
 ## Attribution & Research
 Based on research from:
