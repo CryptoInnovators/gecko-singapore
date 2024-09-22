@@ -16,10 +16,13 @@
 
 
 ## What is Gecko?
+Gecko is an autonomous multi-agent AI auditor that combines LLM’s with custom security tools like fuzzers and static analysers to replicate a hacker's intuition and detect vulnerabilities in Solidity and Cairo smart contracts.
 
 ## Features
+- [Custom GPT Vulnerability Research Engine](https://github.com/nkoorty/gecko-singapore/blob/main/backend/src/ai_engine.py)
 - [Solidity Grammar Parser](https://github.com/OpenZeppelin/sgp)
 - [Modified Caracal](https://github.com/crytic/caracal)
+- [LLM powered Solidity Fuzzer](https://github.com/nkoorty/gecko-singapore/tree/main/backend/src/fuzz)
 
 ## Demo
 <p align="center">
