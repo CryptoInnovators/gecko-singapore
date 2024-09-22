@@ -22,10 +22,10 @@
 - [Modified Caracal](https://github.com/crytic/caracal)
 
 ## Demo
+<p align="center">
+      <img src="https://github.com/user-attachments/assets/a41723a0-7580-41ed-86dd-11027938300f" alt="Gecko_Arch" width="50%" />
+</p>
 
-<div style="text-align: center;">
-  <img src="https://github.com/user-attachments/assets/a41723a0-7580-41ed-86dd-11027938300f" alt="Gecko_Arch" width="50%" />
-</div>
 
 
 
