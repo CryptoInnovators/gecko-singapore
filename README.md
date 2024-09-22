@@ -49,7 +49,7 @@ Prerequisites:
 Dataset based on scraped etherscan small [contracts](https://github.com/nkoorty/gecko-singapore/blob/main/dataset.txt)
 
 <p align="center">
-      <img src="https://github.com/user-attachments/assets/db479219-84b6-4f8d-988a-a5b35e2af1b8" alt="Results" width="50%" />
+      <img src="https://github.com/user-attachments/assets/db479219-84b6-4f8d-988a-a5b35e2af1b8" alt="Results" width="75%" />
 </p>
 
 
