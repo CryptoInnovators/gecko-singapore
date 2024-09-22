@@ -65,6 +65,9 @@ Dataset based on scraped etherscan small [contracts](https://github.com/nkoorty/
 
 
 ## Roadmap
+- [ ] Implement multi-file uploads
+- [ ] Import GitHub repositories and automatically scan all files for vulnerabilities
+- [ ] Automated report generation at each PR/push
 
 ## Team
 - [JJ](https://www.linkedin.com/in/jeevan-jutla/): ex-Binance ex-Intellegence Security Researcher, interested in AI for offensive security
