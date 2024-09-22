@@ -40,11 +40,14 @@ Prerequisites:
 - PostgreSQL
 
 1. Clone the Gecko repository:
-   ```sh
-   https://github.com/nkoorty/gecko-singapore
-   ```
 
-2. 
+        https://github.com/nkoorty/gecko-singapore
+2. Install necessary dependencies and run the frontend (Google or GitHub login required)
+
+        npm i
+        npm run dev
+
+3. Run the agentic workflow backend
 
 ## Images
 <p align="center">
