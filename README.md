@@ -47,7 +47,11 @@ Prerequisites:
 
 ## Results
 Dataset based on scraped etherscan small [contracts](https://github.com/nkoorty/gecko-singapore/blob/main/dataset.txt)
-![chart](https://github.com/user-attachments/assets/db479219-84b6-4f8d-988a-a5b35e2af1b8)
+
+<p align="center">
+      <img src="https://github.com/user-attachments/assets/db479219-84b6-4f8d-988a-a5b35e2af1b8" alt="Results" width="50%" />
+</p>
+
 
 ## Roadmap
 
